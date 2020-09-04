@@ -6,30 +6,49 @@ using UnityEngine.Networking;
 
 public class MysqlDataDemo : MonoBehaviour
 {
-    string url = "http://localhost/Login.php";
-    string[] results;
+    string uri = "http://localhost/Register.php";
+    //string[] results;
     // Start is called before the first frame update
     [SerializeField]
-    InputField userName;
+    InputField registerName;
     [SerializeField]
-    InputField userPassword;
-    //string uname,upassword;
-
-    
-    void Start()
+    InputField registerPassword;
+    [SerializeField]
+    InputField registerEmail;
+    public void RegisterButtonClick()
     {
-        //uname = userName.ToString();
-        //upassword = userPassword.ToString();
-       // StartCoroutine(Request(url));
-    }
-
-    public void ButtonClick()
-    {
+        StartCoroutine(Registor(uri, registerName.text,registerPassword.text,registerEmail.text));
         
-        StartCoroutine(Login(url));
+    }
+    IEnumerator Registor(string url, string rName, string rPassword, string rEmail)
+    {
+           WWWForm form = new WWWForm();
+            form.AddField("phpUsername", rName);
+            form.AddField("phpUserpassword", rPassword);
+            form.AddField("phpUserEmail", rEmail);
+
+        using (UnityWebRequest www = UnityWebRequest.Post(url, form))
+            {
+                yield return www.SendWebRequest();
+
+                if (www.isNetworkError || www.isHttpError)
+                {
+                    Debug.Log(www.error);
+                }
+                else
+                {
+                    Debug.Log("Form upload complete!");
+                    Debug.Log("Received: " + www.downloadHandler.text);
+            }
+            }
+        
     }
 
 
+
+
+
+/*
     IEnumerator Request(string uri)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
@@ -48,8 +67,8 @@ public class MysqlDataDemo : MonoBehaviour
         }
 
 
-    }
-    IEnumerator Login(string uri)
+    }*/
+    /*IEnumerator Login(string uri)
     {
         WWWForm form = new WWWForm();
         form.AddField("usname",userName.text);
@@ -69,5 +88,5 @@ public class MysqlDataDemo : MonoBehaviour
                 Debug.Log( ":\nReceived: " + webRequest.downloadHandler.text);
             }
         }
-    }
+    }*/
 }
